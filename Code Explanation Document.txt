@@ -1,0 +1,107 @@
+Code Explanation Document
+
+Import Statements
+
+1. import csv
+Used to handle reading and writing of CSV files.
+Essential for importing data from sources.csv and destinations.csv.
+
+1. import math
+Provides mathematical functions such as square root (sqrt) for calculating distances.
+
+2. import matplotlib.pyplot as plt
+Enables the creation of visualizations like scatter plots and lines to represent the sources, destinations, and paths.
+
+3. import pandas as pd
+Used for reading CSV files and performing data analysis tasks.
+
+Utility Functions
+
+1. calculate_distance(x1, y1, x2, y2)
+Purpose: Calculates the Euclidean distance between two points (x1, y1) and (x2, y2).
+Formula: √((x2 - x1)^2 + (y2 - y1)^2)
+Usage: Ensures paths maintain a minimum distance.
+
+2. check_minimum_distance(p1, p2, min_distance=5)
+Purpose: Verifies that the distance between two points is at least min_distance units.
+Usage: Prevents paths from being too close to each other.
+
+3. orientation(p, q, r)
+Purpose: Determines the orientation of three points (p, q, r):
+    - 0 for collinear points.
+    - 1 for clockwise.
+    - 2 for counterclockwise.
+Usage: Key in determining if two line segments intersect.
+
+4. on_segment(p, q, r)
+Purpose: Checks if a point q lies on the line segment defined by points p and r.
+Usage: Ensures points are part of valid paths without intersections.
+
+5. do_intersect(p1, q1, p2, q2)
+Purpose: Determines if two line segments intersect.
+Considers both general and special cases using orientations and segment bounds.
+Usage: Ensures paths from sources to destinations do not cross each other.
+
+Backtracking Function
+
+find_valid_paths(sources, destinations, paths, assigned_destinations, current_index)
+Purpose: Implements backtracking to assign sources to destinations.
+Steps:
+1. If all sources are processed, return True.
+2. For each destination:
+- Check if it is unassigned and if the path is valid (no intersections and minimum distance).
+- Add the path if valid and proceed to the next source.
+- Backtrack if no configuration works.
+3. Return False if no valid path exists for the current source.
+Usage: Finds non-conflicting paths.
+
+Visualization
+
+plot_paths(sources, destinations, paths)
+Purpose: Plots sources, destinations, and valid paths.
+Details:
+- Uses scatter for sources and destinations.
+- Uses plot to connect sources and destinations with lines.
+- Adds labels and a grid for better visualization.
+Usage: Visualizes the results of the valid path calculations.
+
+Main Logic
+
+1. Read Sources and Destinations
+
+with open('sources.csv', 'r') as file:
+reader = csv.reader(file)
+next(reader)  # Skip header
+sources = [(float(row[0]), float(row[1])) for row in reader]
+
+with open('destinations.csv', 'r') as file:
+reader = csv.reader(file)
+next(reader)  # Skip header
+destinations = [(float(row[0]), float(row[1])) for row in reader]
+
+Reads coordinates of sources and destinations from sources.csv and destinations.csv.
+Converts each row into a tuple of floats representing (x, y) coordinates.
+
+1. Initialize Variables
+
+paths = []
+assigned_destinations = set()
+
+paths: Stores valid (source, destination) pairs.
+assigned_destinations: Tracks which destinations are already assigned.
+
+1. Backtracking Execution
+
+if find_valid_paths(sources, destinations, paths, assigned_destinations, 0):
+print("Valid Paths Found:")
+for i, (source, destination) in enumerate(paths):
+print(f"Path {i+1}: {source} -> {destination}")
+plot_paths(sources, destinations, paths)
+else:
+print("No valid paths found.")
+
+Calls find_valid_paths to calculate paths.
+If paths are found:
+- Prints them.
+- Plots them.
+Otherwise, informs no valid configuration exists.
